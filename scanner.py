@@ -9,7 +9,10 @@ from ioc_writer import ioc_api
 try:
     import signify.authenticode
     if not hasattr(signify.authenticode, 'SignedPEFile'):
-        setattr(signify.authenticode, 'SignedPEFile', getattr(signify.authenticode, 'AuthenticodeFile', None))
+        class MockPE(getattr(signify.authenticode, 'AuthenticodeFile', object)):
+            def __init__(self, *args, **kwargs):
+                pass
+        setattr(signify.authenticode, 'SignedPEFile', MockPE)
 except ImportError:
     pass
 
@@ -23,10 +26,22 @@ class Scanner:
         self.load_model()
         
     def load_model(self):
+        if not os.path.exists(self.model_path):
+            print(f"Model file {self.model_path} not found. Downloading EMBER2024_PE.model...")
+            os.makedirs(os.path.dirname(self.model_path), exist_ok=True)
+            try:
+                from huggingface_hub import hf_hub_download
+                import shutil
+                # thrember actually uses this undocumented repo
+                downloaded_path = hf_hub_download(repo_id="joyce8/EMBER2024-benchmark-models", filename="EMBER2024_PE.model")
+                shutil.copy2(downloaded_path, self.model_path)
+            except Exception as e:
+                print(f"Failed to download model: {e}")
+            
         if os.path.exists(self.model_path):
             self.lgbm_model = lgb.Booster(model_file=self.model_path)
         else:
-            print(f"Warning: Model file {self.model_path} not found.")
+            print(f"Warning: Model file {self.model_path} not found even after download attempt.")
             
     def get_hashes(self, file_data):
         md5 = hashlib.md5(file_data).hexdigest()
