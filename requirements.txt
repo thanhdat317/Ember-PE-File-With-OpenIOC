@@ -8,5 +8,6 @@ streamlit>=1.39.0
 requests>=2.25.0
 ioc_writer>=0.2.2
 pip>=24.0.0
+oscrypto @ git+https://github.com/wbond/oscrypto.git@master
 signify>=0.6.0
 git+https://github.com/FutureComputing4AI/EMBER2024.git
