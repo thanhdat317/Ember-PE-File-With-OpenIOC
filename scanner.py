@@ -12,6 +12,8 @@ try:
         class MockPE(getattr(signify.authenticode, 'AuthenticodeFile', object)):
             def __init__(self, *args, **kwargs):
                 pass
+            def iter_signed_datas(self):
+                return iter([])
         setattr(signify.authenticode, 'SignedPEFile', MockPE)
 except ImportError:
     pass
