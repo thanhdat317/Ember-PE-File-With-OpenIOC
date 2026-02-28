@@ -3,6 +3,16 @@ import hashlib
 import lightgbm as lgb
 import requests
 from ioc_writer import ioc_api
+
+# Monkeypatch newer signify versions to support thrember,
+# circumventing the crash with oscrypto on Streamlit Cloud Python 3.13
+try:
+    import signify.authenticode
+    if not hasattr(signify.authenticode, 'SignedPEFile'):
+        setattr(signify.authenticode, 'SignedPEFile', getattr(signify.authenticode, 'AuthenticodeFile', None))
+except ImportError:
+    pass
+
 from thrember import PEFeatureExtractor
 
 class Scanner:
