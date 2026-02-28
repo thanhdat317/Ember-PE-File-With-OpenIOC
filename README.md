@@ -19,28 +19,37 @@ By leveraging the cutting-edge **LightGBM** models trained on the massive **EMBE
 - **📄 OpenIOC Export**: Automatically structures findings (Hashes, IPs, Domains) into actionable `.ioc` (XML) reports for threat hunters.
 - **🖥️ Streamlit Dashboard**: A beautiful, responsive web interface—no CLI expertise required.
 
-## 🚀 Installation
+## 🚀 Local Installation
 
-Ensure you have Python 3.9, 3.10, 3.11, or 3.12 installed (`3.13` support is experimental due to OpenSSL 3 dependencies).
+Ensure you have Python 3.9, 3.10, 3.11, or 3.12 installed on your computer.
 
-**1. Clone the repository**
+**Step 1: Get the Code**
+Download the project to your computer by cloning the repository:
 ```bash
 git clone https://github.com/thanhdat317/Ember-PE-File-With-OpenIOC.git
 cd Ember-PE-File-With-OpenIOC
 ```
 
-**2. Install dependencies**
-Install the core requirements including the newly required `thrember` module explicitly supporting EMBER2024:
+**Step 2: Install Required Libraries**
+Install all the necessary Python packages (including `thrember` for the EMBER AI models):
 ```bash
 pip install -r requirements.txt
 ```
 
-**3. Run the Application**
-Launch the Streamlit web server:
+**Step 3: Download the AI Models (Mandatory First-Time Setup)**
+Because the AI models are over 400MB, they are NOT included in the GitHub repository. **You must download them before scanning any files**.
+
+You can let the app download it automatically, OR manually trigger the download by running this quick Python command in your terminal:
+```bash
+python -c "import os, thrember; os.makedirs('models', exist_ok=True); thrember.download_models('./models')"
+```
+*Wait for the progress bar to finish. This will place the required `EMBER2024_PE.model` into the `./models` folder.*
+
+**Step 4: Launch the Dashboard!**
+Start the Streamlit web server:
 ```bash
 streamlit run app.py
 ```
-> **Important Note**: On the *first launch*, the application will automatically download the heavy EMBER2024 AI models (e.g., `EMBER2024_PE.model`) into the `./models` directory. Depending on your network, this download might take a few moments. Subsequent launches will be instantaneous.
 
 ## 🏁 Usage
 
