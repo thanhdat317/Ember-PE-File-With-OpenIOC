@@ -1,74 +1,57 @@
 <div align="center">
   <h1>🛡️ EMBER2024 Malware Scanner</h1>
-  <p>
-    <strong>A high-performance machine learning based malware detection tool</strong>
-  </p>
-  <p>
-    Powered by the cutting-edge <a href="https://github.com/FutureComputing4AI/EMBER2024">EMBER2024 Dataset</a> and LightGBM.
-  </p>
+  <p><strong>Công cụ quét mã độc mạnh mẽ chuyên dùng cho file PE chạy trên nền tảng AI mới nhất</strong></p>
 </div>
 
 <hr/>
 
-## 📖 Overview
+## 📖 Giới thiệu (Overview)
 
-The **EMBER2024 Malware Scanner** is an intelligent security solution evaluating PE (Portable Executable) files—such as `.exe`, `.sys`, and `.dll`—using advanced Machine Learning models trained on the EMBER2024 dataset.
+**EMBER2024 Malware Scanner** là hệ thống bảo mật quét mã độc thông minh. Ứng dụng tập trung phân tích các file chuẩn Windows PE (như `.exe`, `.dll`, `.sys`) bằng trí tuệ nhân tạo.
 
-This application provides a robust and visually interactive UI to inspect files in real-time, generate threat scores, integrate with VirusTotal for supplementary reputation context, and automatically output comprehensive **OpenIOC XML** reports for threat hunting and incident response.
+Dự án này sử dụng mô hình học máy **LightGBM** mới nhất được đào tạo trên tập dữ liệu đồ sộ **EMBER2024** (được nghiên cứu và xuất bản năm 2024). Ứng dụng cung cấp giao diện trực quan ngay trên trình duyệt, không cần chạy file độc hại mà vẫn có thể phân tích cấu trúc để đưa ra tỷ lệ rủi ro một cách chính xác.
 
-## ✨ Key Features
+## ✨ Tính năng chính (Features)
 
-- **🧠 Cutting-Edge ML Models**: Operates the latest LightGBM models built strictly on the EMBER2024 dataset methodologies (utilizing `thrember` and `pefile`).
-- **🔍 Fast Static Analysis**: Immediate file parsing without executing the suspicious binaries.
-- **🌐 VirusTotal Integration**: Seamlessly augments ML scores by querying your API token to VirusTotal for an expanded reputation footprint and networking IOCs.
-- **📄 OpenIOC Export**: Automatically structures findings and extracted indicators into actionable `.ioc` format (XML).
-- **🖥️ Streamlit Interface**: Beautiful, responsive, and intuitive web application setup without the complexity of deep terminal knowledge.
+- **🧠 Trí tuệ Nhân tạo hiện đại**: Ứng dụng trực tiếp model LightGBM mạnh mẽ của Bộ dữ liệu EMBER2024.
+- **🔍 Quét mã tĩnh (Static Analysis)**: Nhận dạng rủi ro và mã độc cực nhanh mà KHÔNG CẦN CHẠY tệp độc hại trên máy (an toàn tuyệt đối).
+- **🌐 Tích hợp VirusTotal**: Mở rộng phạm vi tìm kiếm mạng IOC và danh tiếng toàn cầu bằng cách kết nối API với VirusTotal.
+- **📄 Xuất báo cáo OpenIOC XML**: Hệ thống tự động thiết lập và xuất báo cáo chuẩn IOC cho các chuyên gia an ninh mạng.
+- **🖥️ Giao diện Streamlit dễ dùng**: Tải file lên và nhận diện trực quan với các thanh tiến trình rủi ro theo % mà không cần kiến thức chạy dòng lệnh.
 
-## 🚀 Installation
+## 🚀 Hướng Dẫn Cài Đặt và Chạy Trên Máy Tính Local (Installation)
 
-Ensure you have Python 3.8+ installed on your system.
+Yêu cầu máy tính cài đặt sẵn Python (phiên bản 3.9 trở lên được khuyến nghị).
 
-**1. Clone the repository**
+**1. Clone dự án về máy**
 ```bash
-git clone https://github.com/yourusername/ember2024-scanner.git
-cd ember2024-scanner
+git clone https://github.com/thanhdat317/Ember-PE-File-With-OpenIOC.git
+cd Ember-PE-File-With-OpenIOC
 ```
 
-**2. Install dependencies**
-Install the core requirements including the newly required `thrember` module explicitly supporting EMBER2024:
+**2. Cài đặt các thư viện phụ thuộc cực kỳ thiết yếu**
 ```bash
 pip install -r requirements.txt
 ```
 
-**3. Fetch the Models**
-Pre-requisite LightGBM models used by the scanner must be placed in a `./models/` directory in the project root. For a PE file analysis, download the `EMBER2024_PE.model` file via the backend Python module:
-```python
-import thrember
-import os
-
-os.makedirs('models', exist_ok=True)
-thrember.download_models('./models')
-```
-> *Note: By default, the app initializes the primary PE model (`models/EMBER2024_PE.model`).*
-
-## 🏁 Usage
-
-Run the web application locally via Streamlit:
-
+**3. Chạy Ứng Dụng (Khởi tạo lần đầu)**
+Ứng dụng sử dụng Streamlit làm máy chủ giao diện. Chạy lệnh sau trong terminal:
 ```bash
 streamlit run app.py
 ```
+> **Lưu ý quan trọng**: Ở lần khởi chạy ĐẦU TIÊN, vì các file mô hình AI (`EMBER2024_PE.model`) có dung lượng khá lớn nên ứng dụng sẽ **tự động tải mô hình** từ máy chủ gốc về thư mục `./models` (khoảng vài chục giây đến vài phút tùy mạng). Bạn chỉ cần chờ hệ thống báo xong là có thể sử dụng ở các lần sau.
 
-1. **Dashboard Access**: After the server starts, navigate to `http://localhost:8501` in your browser.
-2. **Scan**: Drag and drop your suspect PE file into the box or browse your local file system.
-3. **Analyze Score**: Observe the ML suspicion threshold out of 100%. (e.g. `98.24% (Malicious)`) 
-4. **VirusTotal (Optional)**: Input your VirusTotal API Key on the sidebar to complement the ML prediction and aggregate further file/networking IOCs.
-5. **Generate IOC**: Click to render and download your formatted `OpenIOC` report.
+## 🏁 Hướng Dẫn Sử Dụng trên trình duyệt
 
-## 🛠️ Tech Stack
-- **Backend / Analysis**: Python, `thrember`, `pefile`, `lightgbm`, `ioc_writer`
-- **Frontend / UI**: `streamlit`, `pandas`
-- **Dataset Focus**: `EMBER2024` ([Paper](https://arxiv.org/abs/2404.13110) / [Repository](https://github.com/FutureComputing4AI/EMBER2024))
+1. Truy cập vào đường link mà Terminal hiển thị (thường là `http://localhost:8501`).
+2. **Kéo & Thả** hoặc chọn một file `.exe` / `.dll` đáng ngờ vào ô tải file.
+3. Chờ công cụ xuất **% Mức độ Rủi ro (ML Score)**. 
+   - Nếu tỷ lệ cao trên 70%, file có nguy cơ cao là mã độc (Malicious).
+4. Bạn có thể nhập mã khóa ẩn API Key của **VirusTotal** vào thanh bên trái để quét file đó diện rộng trên toàn cầu miễn phí, qua đó trích xuất ra các IP và Domain nguy hiểm đi kèm.
+5. Nhấn **Generate OpenIOC Report** để tải file chứng chi định kỳ rủi ro (.ioc) về máy.
 
-## 📄 License
-This original project context leverages third-party open-source components (`EMBER2024`) alongside custom detection interfaces. Review standard `thrember` licenses or applicable open-source limitations based on implementation rules.
+## ☁️ Hướng Dẫn Deploy Lên Streamlit Cloud
+
+Dự án này đã được tối ưu hóa đặc biệt để triển khai (Deploy) dễ dàng lên các nền tảng đám mây lớn như **Streamlit Community Cloud**:
+- Github Repository của bạn không chứa file Model nặng, vì `app.py` đã được mã hóa tự động kéo mô hình về server lúc runtime.
+- Tuy nhiên, hãy vào phần **Advanced Settings** lúc tạo app trên Streamlit Cloud, dán biến môi trường Python version `3.10` để tương thích cấu trúc của thư viện `thrember` tốt nhất.
