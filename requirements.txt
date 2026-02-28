@@ -1,6 +1,11 @@
-lief==0.9.0
+pefile>=2023.2.7
 tqdm>=4.31.0
 numpy>=1.16.3
 pandas>=0.24.2
-lightgbm>=2.2.3
+lightgbm>=3.3.0
 scikit-learn>=0.20.3
+streamlit>=1.20.0
+requests>=2.25.0
+ioc_writer>=0.2.2
+git+https://github.com/FutureComputing4AI/EMBER2024.git
+signify==0.5.2
