@@ -39,25 +39,28 @@ if uploaded_file is not None:
         st.markdown("**File Hashes:**")
         st.code(f"MD5: {md5}\nSHA1: {sha1}\nSHA256: {sha256}")
         
-    with st.spinner("Extracting features and running ML model..."):
+    # Define state key for the uploaded file prediction
+    score_state_key = f"ml_score_{sha256}"
+    
+    with st.spinner("Extracting features and running ML model (this might take a minute)..."):
         try:
-            score = scanner.predict(file_bytes)
+            if score_state_key not in st.session_state:
+                st.session_state[score_state_key] = scanner.predict(file_bytes)
+            
+            score = st.session_state[score_state_key]
             
             with col2:
                 st.markdown("**EMBER2024 ML Score:**")
-                
                 score_percentage = score * 100
                 
                 # Visual indicator for score
                 if score >= threshold:
                     st.error(f"### {score_percentage:.2f}% (Malicious)")
-                    st.progress(float(score))
                 elif score >= (threshold / 2):
                     st.warning(f"### {score_percentage:.2f}% (Suspicious)")
-                    st.progress(float(score))
                 else:
                     st.success(f"### {score_percentage:.2f}% (Benign)")
-                    st.progress(float(score))
+                st.progress(float(score))
             
             vt_stats = None
             
