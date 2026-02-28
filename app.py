@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import json
 import os
-from scanner import Scanner
 
 st.set_page_config(page_title="EMBER2024 Malware Scanner", page_icon="🛡️", layout="wide")
 
@@ -12,14 +11,16 @@ st.markdown("Upload a PE file (`.exe`, `.dll`, etc.) to get an ML-based maliciou
 # Initialize Scanner
 @st.cache_resource
 def load_scanner():
-    import thrember
     # Ensure model directory exists
     os.makedirs('models', exist_ok=True)
     # Autodownload just the PE model to avoid downloading everything
     if not os.path.exists('models/EMBER2024_PE.model'):
-        # using internal thrember download behavior with custom filter or download one
-        st.info("Downloading EMBER2024 Models (This only happens once)...")
-        thrember.download_models('./models')
+        st.info("Downloading EMBER2024 PE Model (This only happens once)...")
+        import urllib.request
+        url = "https://huggingface.co/FutureComputing4AI/EMBER2024/resolve/main/models/EMBER2024_PE.model?download=true"
+        urllib.request.urlretrieve(url, "models/EMBER2024_PE.model")
+    
+    from scanner import Scanner
     return Scanner()
 
 scanner = load_scanner()
