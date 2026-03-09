@@ -171,14 +171,42 @@ class Scanner:
                     item = ioc_api.make_indicatoritem_node("is", "PortItem", "PortItem/remoteIP", "IP", val)
                     ioc.top_level_indicator.append(item)
         
-        # Save to file
-        ioc.write_ioc_to_file(output_dir)
-        output_path = os.path.join(output_dir, f"{ioc.iocid}.ioc")
+        # Convert to OpenIOC 1.0 format
+        ioc.root.tag = "ioc"
+        ioc.root.attrib["xmlns"] = "http://schemas.mandiant.com/2010/ioc"
         
-        # Optionally rename it to the sha256 to match the UI expectation, or just let it use iocid.
-        # But since app.py downloads it and sets its own filename or expects the path, we can rename it:
+        # We must NOT delete 'published-date' because IOCe expects it and 
+        # throws a Nullable object must have a value exception if it is missing.
+        if "published-date" not in ioc.root.attrib:
+            ioc.root.attrib["published-date"] = "0001-01-01T00:00:00"
+        
+        criteria_node = ioc.root.find("criteria")
+        if criteria_node is not None:
+            criteria_node.tag = "definition"
+            
+        metadata_node = ioc.root.find("metadata")
+        if metadata_node is not None:
+            short_desc = metadata_node.find("short_description")
+            if short_desc is not None and not short_desc.text:
+                short_desc.text = f"Malicious file detection: {file_name}"
+                
+            for child in reversed(list(metadata_node)):
+                ioc.root.insert(0, child)
+                
+            ioc.root.remove(metadata_node)
+            
+        try:
+            ioc.root.remove(ioc.parameters)
+        except ValueError:
+            pass
+
+        # Save to file (OpenIOC 1.0)
+        ioc_str = ioc.write_ioc_to_string(force=True)
+        if isinstance(ioc_str, bytes):
+            ioc_str = ioc_str.decode("utf-8")
+            
         desired_path = os.path.join(output_dir, f"{sha256}.ioc")
-        if os.path.exists(desired_path):
-            os.remove(desired_path)
-        os.rename(output_path, desired_path)
+        with open(desired_path, "w", encoding="utf-8") as f:
+            f.write(ioc_str)
+            
         return desired_path

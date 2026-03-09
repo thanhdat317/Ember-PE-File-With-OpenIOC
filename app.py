@@ -10,11 +10,11 @@ st.markdown("Upload a PE file (`.exe`, `.dll`, etc.) to get an ML-based maliciou
 
 # Initialize Scanner
 @st.cache_resource
-def load_scanner():
+def load_scanner(_version=1):
     from scanner import Scanner
     return Scanner()
 
-scanner = load_scanner()
+scanner = load_scanner(_version=2)
 
 with st.sidebar:
     st.header("Settings")
